@@ -1,0 +1,10 @@
+---
+# defaults file for itop
+itop_setup_mysql: no
+itop_mysql_db_name: "itop"
+itop_mysql_user: itop
+itop_mysql_host: "localhost"
+itop_download_from_sourceforge: yes
+#itop_zipfile: "iTop-2.7.0-1-5541.zip"
+itop_zipfile: "https://versaweb.dl.sourceforge.net/project/itop/itop/2.7.3/iTop-2.7.3-6624.zip"
+itop_webroot: "/srv/itop"

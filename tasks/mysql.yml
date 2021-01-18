@@ -1,0 +1,36 @@
+---
+  - name: Make sure MariaDB is installed (Debian)
+    apt:
+      name: "{{ itop_mysql_apt_packages }}"
+      update_cache: yes
+      cache_valid_time: 3600
+      state: present
+    when: ansible_os_family == 'Debian'
+
+  - name: Make sure MariaDB is installed (Red Hat)
+    yum:
+      name: "{{ itop_mysql_yum_packages }}"
+      state: present
+    when: ansible_os_family == 'RedHat'
+
+  - name: Start MariaDB (Red Hat)
+    systemd:
+      name: mariadb
+      state: started
+      enabled: yes
+    when: ansible_os_family == 'RedHat'
+
+  - name: Create iTop database
+    mysql_db:
+      name: "{{ itop_mysql_db_name }}"
+      state: present
+      login_unix_socket: "{{ itop_mysql_control_socket }}"
+
+  - name: Create itop user in MariaDB
+    mysql_user:
+      name: "{{ itop_mysql_user }}"
+      password: "{{ itop_mysql_password }}"
+      priv: "{{ itop_mysql_db_name }}.*:ALL"
+      state: present
+      login_unix_socket: "{{ itop_mysql_control_socket }}"
+    no_log: True

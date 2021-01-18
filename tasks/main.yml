@@ -1,0 +1,83 @@
+---
+  - name: gather os specific variables
+    include_vars: "{{ item }}"
+    with_first_found:
+      - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+      - "{{ ansible_distribution }}.yml"
+      - "{{ ansible_os_family }}.yml"
+    tags: vars
+
+  - include: mysql.yml
+    when: itop_setup_mysql
+    tags: [ mysql ]
+
+  - name: Make sure PHP prerequisites are installed (Debian)
+    apt:
+      name: "{{ itop_php_apt_packages }}"
+      update_cache: yes
+      cache_valid_time: 3600
+    when: ansible_os_family == 'Debian'
+    tags: [ prerequisites ]
+
+  - name: Make sure PHP prerequisites are installed (Red Hat)
+    yum:
+      name: "{{ itop_php_yum_packages }}"
+      state: present
+    when: ansible_os_family == 'RedHat'
+    tags: [ prerequisites ]
+
+  - name: Make sure unzip is installed (Debian)
+    apt:
+      name: "unzip"
+      update_cache: yes
+      cache_valid_time: 3600
+    when: ansible_os_family == 'Debian'
+    tags: [ prerequisites ]
+
+  - name: Make sure Red Hat-specific prerequisites are installed (Red Hat)
+    yum:
+      name: "{{ itop_extra_yum_packages }}"
+      state: present
+    when: ansible_os_family == 'RedHat'
+    tags: [ prerequisites ]
+
+  - name: "Make sure {{ itop_webroot }} exists"
+    file:
+      dest: "{{ itop_webroot }}"
+      owner: "{{ itop_owner }}"
+      group: "{{ itop_group }}"
+      mode: "0755"
+      state: directory
+    tags: [ install ]
+
+  - name: Download and unpack itop
+    unarchive:
+      remote_src: "{{ itop_download_from_sourceforge }}"
+      src: "{{ itop_zipfile }}"
+      dest: "{{ itop_webroot }}"
+      owner: "{{ itop_owner }}"
+      group: "{{ itop_group }}"
+    tags: [ install ]
+
+  - name: Copy zip contents into place
+    copy:
+      remote_src: yes
+      src: "{{ itop_webroot }}/web/"
+      dest: "{{ itop_webroot }}/"
+      owner: "{{ itop_owner }}"
+      group: "{{ itop_group }}"
+
+  - name: Switch web SELinux context to permissive so it will run
+    community.general.selinux_permissive:
+      name: httpd_t
+      permissive: true
+    when: ansible_os_family == 'RedHat'
+    tags: [ selinux ]
+
+  - name: Manage nginx timeouts
+    copy:
+      src: "timeouts.conf"
+      dest: "/etc/nginx/conf.d/timeouts.conf"
+      owner: "root"
+      group: "root"
+      mode: '0644'

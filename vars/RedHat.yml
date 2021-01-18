@@ -1,0 +1,29 @@
+---
+# vars file for itop
+itop_mysql_yum_packages:
+  - "mariadb-server"
+  - "mariadb"
+  - "python3-PyMySQL"
+
+itop_php_yum_packages:
+  - "php"
+  - "php-mysqlnd"
+  - "php-ldap"
+  - "php-mbstring"
+  - "php-cli"
+  - "php-soap"
+  - "php-json"
+  - "graphviz"
+  - "php-xml"
+  - "php-gd"
+  - "php-zip"
+  - "php-fpm"
+
+itop_extra_yum_packages:
+  - "policycoreutils-python-utils"
+  - "unzip"
+
+itop_owner: "apache"
+itop_group: "apache"
+
+itop_mysql_control_socket: "/var/lib/mysql/mysql.sock"
