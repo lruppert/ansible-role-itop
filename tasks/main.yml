@@ -65,6 +65,7 @@
       src: "{{ itop_webroot }}/web/"
       dest: "{{ itop_webroot }}/"
       owner: "{{ itop_owner }}"
+      mode: preserve
       group: "{{ itop_group }}"
 
   - name: Switch web SELinux context to permissive so it will run
