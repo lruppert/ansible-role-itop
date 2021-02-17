@@ -3,7 +3,6 @@
 itop_mysql_apt_packages:
   - "mariadb-server"
   - "mariadb-client"
-  - "python-pymysql"
   - "python3-pymysql"
 
 itop_php_apt_packages:

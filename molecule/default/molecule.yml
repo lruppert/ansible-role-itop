@@ -1,0 +1,54 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: debian-buster
+    # image: docker.io/debian:buster
+    image: docker.io/alehaa/debian-systemd:buster
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: /lib/systemd/systemd
+    capabilities:
+      - SYS_ADMIN
+    exposed_ports:
+      - 80/tcp
+    published_ports:
+      - 0.0.0.0:8888:80/tcp
+  - name: ubuntu-20
+    image: docker.io/geerlingguy/docker-ubuntu2004-ansible
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: /lib/systemd/systemd
+    capabilities:
+      - SYS_ADMIN
+    exposed_ports:
+      - 80/tcp
+    published_ports:
+      - 0.0.0.0:8889:80/tcp
+  - name: centos-8
+    image: docker.io/centos:8
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: /lib/systemd/systemd
+    capabilities:
+      - SYS_ADMIN
+    exposed_ports:
+      - 80/tcp
+    published_ports:
+      - 0.0.0.0:8890:80/tcp
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

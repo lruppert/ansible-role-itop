@@ -1,0 +1,22 @@
+---
+- name: Put prerequisites on Debian
+  hosts: debian-buster
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Install python for Ansible
+      raw:
+        test -e /usr/bin/python ||
+        (apt -y update &&
+        apt install -y ca-certificates python-minimal python3-apt)
+      changed_when: false
+
+- name: Put Python on Ubuntu
+  hosts: ubuntu-lts
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Install dependencies for Ansible
+      raw: test -e /usr/bin/python ||
+        (apt -y update && apt install -y python python3-apt apt-utils)
+      changed_when: false

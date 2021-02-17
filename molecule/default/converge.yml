@@ -1,0 +1,37 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Set up nginx"
+      include_role:
+        name: "geerlingguy.nginx"
+      vars:
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "localhost"
+            state: "present"
+            filename: "itop.conf"
+            extra_parameters: |
+              root {{ itop_webroot }};
+              location / {
+                try_files $uri $uri/ =404;
+              }
+              index index.php;
+              location ~ \.(php|phar)(/.*)?$ {
+                   fastcgi_split_path_info ^(.+\.(?:php|phar))(/.*)$;
+
+                   fastcgi_intercept_errors on;
+                   fastcgi_index  index.php;
+                   include        fastcgi_params;
+                   fastcgi_read_timeout 300;
+                   fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+                   fastcgi_param  PATH_INFO $fastcgi_path_info;
+                   fastcgi_pass   php-fpm;
+              }
+
+    - name: "Include ansible-role-itop"
+      include_role:
+        name: "ansible-role-itop"
+      vars:
+        itop_mysql_password: "This is only a test"
+        itop_setup_mysql: true

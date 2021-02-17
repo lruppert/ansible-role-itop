@@ -5,7 +5,6 @@
     - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
-  tags: vars
 
 - include: mysql.yml
   when: itop_setup_mysql
@@ -48,7 +47,7 @@
     group: "{{ itop_group }}"
     mode: "0755"
     state: directory
-  tags: [install]
+  tags: [prerequisites]
 
 - name: Download and unpack itop
   unarchive:
@@ -73,7 +72,8 @@
   community.general.selinux_permissive:
     name: httpd_t
     permissive: true
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' and
+    ansible_virtualization_type != 'docker'
   tags: [selinux]
 
 - name: Manage nginx timeouts
@@ -83,4 +83,4 @@
     owner: "root"
     group: "root"
     mode: '0644'
-  tags: [install]
+  tags: [never, nginx]
