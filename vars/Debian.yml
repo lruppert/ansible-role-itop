@@ -18,10 +18,9 @@ itop_php_apt_packages:
   - "php-xml"
   - "php-gd"
   - "php-zip"
-  - "php-fpm" # Replace with apache2 module if that's your thing
+  - "php-fpm"  # Replace with apache2 module if that's your thing
 
 itop_owner: "www-data"
 itop_group: "www-data"
 
 itop_mysql_control_socket: "/var/run/mysqld/mysqld.sock"
-
