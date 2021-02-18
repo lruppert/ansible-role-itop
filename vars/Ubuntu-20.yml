@@ -24,6 +24,6 @@ itop_php_apt_packages:
 itop_owner: "www-data"
 itop_group: "www-data"
 
-itop_phpfpm_service: "php7.3-fpm"
+itop_phpfpm_service: "php7.4-fpm"
 
 itop_mysql_control_socket: "/var/run/mysqld/mysqld.sock"

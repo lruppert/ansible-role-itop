@@ -5,8 +5,11 @@ itop_mysql_yum_packages:
   - "mariadb"
   - "MySQL-python"
 
-itop_php_yum_packages:
+itop_phpfpm_yum_packages:
   - "php"
+  - "php-fpm"
+
+itop_php_yum_packages:
   - "php-mysql"
   - "php-ldap"
   - "php-mbstring"
@@ -17,9 +20,10 @@ itop_php_yum_packages:
   - "php-xml"
   - "php-gd"
   - "php-zip"
-  - "php-fpm"
 
 itop_owner: "nginx"
 itop_group: "nginx"
+
+itop_phpfpm_service: "php-fpm"
 
 itop_mysql_control_socket: "/var/lib/mysql/mysql.sock"

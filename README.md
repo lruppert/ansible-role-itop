@@ -16,6 +16,11 @@ itop_group: Group owner of itop application files
 itop_zipfile: URL or path name of the file. Default: Sourceforge download url
 itop_webroot: path name of webroot for itop. Default: /srv/itop
 
+itop_phpfpm_service: The name of the service that restarts php-fpm
+
+itop_preseed: [yes|NO] Use Combodo's script to preconfigure the settings
+itop_preseed_url: The URL of iTop, used when preseeding the database
+
 itop_setup_mysql: [yes|NO] Install and configure MySQL
 itop_mysql_control_socket: Path name of MySQL control socket
 itop_mysql_db_name: name of itop database

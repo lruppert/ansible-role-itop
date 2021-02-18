@@ -8,15 +8,36 @@
       raw:
         test -e /usr/bin/python ||
         (apt -y update &&
-        apt install -y ca-certificates python-minimal python3-apt)
+        apt install -y python-minimal python3-apt)
+      changed_when: false
+    - name: Make sure prereqs are installed and apt cache is present
+      apt:
+        name:
+          - ca-certificates
+          - php-fpm
+          - sudo
+        update_cache: true
       changed_when: false
 
-- name: Put Python on Ubuntu
-  hosts: ubuntu-lts
+- name: Put prerequisites on Ubuntu
+  hosts: ubuntu-20
   become: false
   gather_facts: false
   tasks:
-    - name: Install dependencies for Ansible
-      raw: test -e /usr/bin/python ||
-        (apt -y update && apt install -y python python3-apt apt-utils)
+    - name: Make sure prereqs are installed and apt cache is present
+      apt:
+        name: php-fpm
+        update_cache: true
+      changed_when: false
+
+- name: Put prerequisites on CentOS
+  hosts: centos-8
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Make sure prereqs are installed
+      dnf:
+        name:
+          - php-fpm
+          - sudo
       changed_when: false

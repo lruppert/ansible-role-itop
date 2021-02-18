@@ -46,6 +46,17 @@ platforms:
       - 0.0.0.0:8890:80/tcp
 provisioner:
   name: ansible
+  inventory:
+    host_vars:
+      centos-8:
+        itop_fastcgi_socket: "php-fpm"
+        itop_preseed_url: "http://localhost:8890/"
+      debian-buster:
+        itop_fastcgi_socket: "unix:/var/run/php/php7.3-fpm.sock"
+        itop_preseed_url: "http://localhost:8888/"
+      ubuntu-20:
+        itop_fastcgi_socket: "unix:/var/run/php/php7.4-fpm.sock"
+        itop_preseed_url: "http://localhost:8889/"
 verifier:
   name: ansible
 lint: |

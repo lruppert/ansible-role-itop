@@ -10,19 +10,58 @@
   when: itop_setup_mysql
   tags: [mysql]
 
-- name: Make sure PHP prerequisites are installed (Debian)
+- name: Make sure PHP-FPM is installed (Debian)
   apt:
-    name: "{{ itop_php_apt_packages }}"
+    name: "{{ itop_phpfpm_apt_packages }}"
     update_cache: true
     cache_valid_time: 3600
   when: ansible_os_family == 'Debian'
   tags: [prerequisites]
 
-- name: Make sure PHP prerequisites are installed (Red Hat)
+- name: Make sure PHP-FPM is installed (Red Hat)
+  yum:
+    name: "{{ itop_phpfpm_yum_packages }}"
+    state: present
+  when: ansible_os_family == 'RedHat'
+  tags: [prerequisites]
+
+- name: Disable PHP-FPM listen.acl_users for Docker (Red Hat)
+  replace:
+    dest: "/etc/php-fpm.d/www.conf"
+    regexp: '^listen.acl_users = apache,nginx'
+    replace: ';listen.acl_users = apache,nginx'
+  notify: restart php-fpm
+  when: ansible_os_family == 'RedHat' and
+    ansible_virtualization_type == 'docker'
+
+- name: Grant nginx access to the PHP-FPM socket for Docker (Red Hat)
+  lineinfile:
+    path: "/etc/php-fpm.d/www.conf"
+    line: "listen.group = nginx"
+  notify: restart php-fpm
+  when: ansible_os_family == 'RedHat' and
+    ansible_virtualization_type == 'docker'
+
+- name: Make sure PHP-FPM is running
+  service:
+    name: "{{ itop_phpfpm_service }}"
+    state: started
+
+- name: Make sure PHP modules are installed (Debian)
+  apt:
+    name: "{{ itop_php_apt_packages }}"
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+  notify: restart php-fpm
+  tags: [prerequisites]
+
+- name: Make sure PHP modules are installed (Red Hat)
   yum:
     name: "{{ itop_php_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
+  notify: restart php-fpm
   tags: [prerequisites]
 
 - name: Make sure unzip is installed (Debian)
@@ -84,3 +123,7 @@
     group: "root"
     mode: '0644'
   tags: [never, nginx]
+
+- include: preseed.yml
+  when: itop_preseed
+  tags: [preseed]

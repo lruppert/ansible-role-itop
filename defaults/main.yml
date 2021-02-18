@@ -9,3 +9,4 @@ itop_download_from_sourceforge: true
 # yamllint disable-line rule:line-length
 itop_zipfile: "https://versaweb.dl.sourceforge.net/project/itop/itop/2.7.3/iTop-2.7.3-6624.zip"
 itop_webroot: "/srv/itop"
+itop_preseed: false

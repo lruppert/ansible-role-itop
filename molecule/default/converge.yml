@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 - name: Converge
   hosts: all
   tasks:
@@ -12,11 +13,19 @@
             state: "present"
             filename: "itop.conf"
             extra_parameters: |
-              root {{ itop_webroot }};
+              root /srv/itop;
               location / {
                 try_files $uri $uri/ =404;
               }
               index index.php;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_buffering off;
+              proxy_request_buffering off;
+              proxy_http_version 1.1;
+              proxy_intercept_errors on;
               location ~ \.(php|phar)(/.*)?$ {
                    fastcgi_split_path_info ^(.+\.(?:php|phar))(/.*)$;
 
@@ -26,7 +35,7 @@
                    fastcgi_read_timeout 300;
                    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
                    fastcgi_param  PATH_INFO $fastcgi_path_info;
-                   fastcgi_pass   php-fpm;
+                   fastcgi_pass   {{ itop_fastcgi_socket }};
               }
 
     - name: "Include ansible-role-itop"
@@ -35,3 +44,4 @@
       vars:
         itop_mysql_password: "This is only a test"
         itop_setup_mysql: true
+        itop_preseed: true

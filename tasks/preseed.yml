@@ -1,0 +1,28 @@
+---
+- name: Copy Combodo preseed script into place
+  copy:
+    src: unattended_install.php
+    dest: "{{ itop_webroot }}/setup/unattended_install.php"
+    owner: "{{ itop_owner }}"
+    group: "{{ itop_group }}"
+    mode: "0755"
+
+- name: Upload preseed configuration
+  template:
+    src: "default-params.xml.j2"
+    dest: "{{ itop_webroot }}/setup/default-params.xml"
+    owner: "{{ itop_owner }}"
+    group: "{{ itop_group }}"
+    mode: "0600"
+
+- name: Run the preseed operation
+  command:
+    argv:
+      - "php"
+      - "{{ itop_webroot }}/setup/unattended_install.php"
+      - " {{ itop_webroot }}/setup/default-params.xml"
+    chdir: "{{ itop_webroot }}/setup"
+  become: true
+  become_user: "{{ itop_owner }}"
+  register: preseed_out
+  changed_when: false
