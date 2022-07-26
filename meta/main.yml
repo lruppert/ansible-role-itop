@@ -3,6 +3,8 @@ galaxy_info:
   author: Lou Ruppert
   description: iTop inventory management system
   company: Ruppert Technologies
+  role_name: itop
+  namespace: lruppert
 
   license: GPLv3
 

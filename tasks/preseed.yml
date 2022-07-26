@@ -1,6 +1,6 @@
 ---
 - name: Copy Combodo preseed script into place
-  copy:
+  ansible.builtin.copy:
     src: unattended_install.php
     dest: "{{ itop_webroot }}/setup/unattended_install.php"
     owner: "{{ itop_owner }}"
@@ -8,7 +8,7 @@
     mode: "0755"
 
 - name: Upload preseed configuration
-  template:
+  ansible.builtin.template:
     src: "default-params.xml.j2"
     dest: "{{ itop_webroot }}/setup/default-params.xml"
     owner: "{{ itop_owner }}"
@@ -16,7 +16,7 @@
     mode: "0600"
 
 - name: Run the preseed operation
-  command:
+  ansible.builtin.command:
     argv:
       - "php"
       - "{{ itop_webroot }}/setup/unattended_install.php"

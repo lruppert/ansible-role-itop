@@ -1,6 +1,6 @@
 ---
 - name: gather os specific variables
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_distribution }}.yml"
@@ -11,7 +11,7 @@
   tags: [mysql]
 
 - name: Make sure PHP-FPM is installed (Debian)
-  apt:
+  ansible.builtin.apt:
     name: "{{ itop_phpfpm_apt_packages }}"
     update_cache: true
     cache_valid_time: 3600
@@ -19,14 +19,14 @@
   tags: [prerequisites]
 
 - name: Make sure PHP-FPM is installed (Red Hat)
-  yum:
+  ansible.builtin.yum:
     name: "{{ itop_phpfpm_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
   tags: [prerequisites]
 
 - name: Disable PHP-FPM listen.acl_users for Docker (Red Hat)
-  replace:
+  ansible.builtin.replace:
     dest: "/etc/php-fpm.d/www.conf"
     regexp: '^listen.acl_users = apache,nginx'
     replace: ';listen.acl_users = apache,nginx'
@@ -35,7 +35,7 @@
     ansible_virtualization_type == 'docker'
 
 - name: Grant nginx access to the PHP-FPM socket for Docker (Red Hat)
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "/etc/php-fpm.d/www.conf"
     line: "listen.group = nginx"
   notify: restart php-fpm
@@ -43,12 +43,12 @@
     ansible_virtualization_type == 'docker'
 
 - name: Make sure PHP-FPM is running
-  service:
+  ansible.builtin.service:
     name: "{{ itop_phpfpm_service }}"
     state: started
 
 - name: Make sure PHP modules are installed (Debian)
-  apt:
+  ansible.builtin.apt:
     name: "{{ itop_php_apt_packages }}"
     update_cache: true
     cache_valid_time: 3600
@@ -57,7 +57,7 @@
   tags: [prerequisites]
 
 - name: Make sure PHP modules are installed (Red Hat)
-  yum:
+  ansible.builtin.yum:
     name: "{{ itop_php_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
@@ -65,7 +65,7 @@
   tags: [prerequisites]
 
 - name: Make sure unzip is installed (Debian)
-  apt:
+  ansible.builtin.apt:
     name: "unzip"
     update_cache: true
     cache_valid_time: 3600
@@ -73,14 +73,14 @@
   tags: [prerequisites]
 
 - name: Make sure Red Hat-specific prerequisites are installed (Red Hat)
-  yum:
+  ansible.builtin.yum:
     name: "{{ itop_extra_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
   tags: [prerequisites]
 
 - name: "Make sure {{ itop_webroot }} exists"
-  file:
+  ansible.builtin.file:
     dest: "{{ itop_webroot }}"
     owner: "{{ itop_owner }}"
     group: "{{ itop_group }}"
@@ -89,7 +89,7 @@
   tags: [prerequisites]
 
 - name: Download and unpack itop
-  unarchive:
+  ansible.builtin.unarchive:
     remote_src: "{{ itop_download_from_sourceforge }}"
     src: "{{ itop_zipfile }}"
     dest: "{{ itop_webroot }}"
@@ -98,7 +98,7 @@
   tags: [install]
 
 - name: Copy zip contents into place
-  copy:
+  ansible.builtin.copy:
     remote_src: true
     src: "{{ itop_webroot }}/web/"
     dest: "{{ itop_webroot }}/"
@@ -116,7 +116,7 @@
   tags: [selinux]
 
 - name: Manage nginx timeouts
-  copy:
+  ansible.builtin.copy:
     src: "timeouts.conf"
     dest: "/etc/nginx/conf.d/timeouts.conf"
     owner: "root"

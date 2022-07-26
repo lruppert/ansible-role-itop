@@ -1,6 +1,6 @@
 ---
 - name: Make sure MariaDB is installed (Debian)
-  apt:
+  ansible.builtin.apt:
     name: "{{ itop_mysql_apt_packages }}"
     update_cache: true
     cache_valid_time: 3600
@@ -8,13 +8,13 @@
   when: ansible_os_family == 'Debian'
 
 - name: Make sure MariaDB is installed (Red Hat)
-  yum:
+  ansible.builtin.yum:
     name: "{{ itop_mysql_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
 
 - name: Start MariaDB (Red Hat)
-  systemd:
+  ansible.builtin.systemd:
     name: mariadb
     state: started
     enabled: true
