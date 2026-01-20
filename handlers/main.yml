@@ -1,6 +1,6 @@
 ---
 # handlers file for itop
-- name: restart php-fpm
+- name: Restart php-fpm
   ansible.builtin.service:
     name: "{{ itop_phpfpm_service }}"
     state: restarted
