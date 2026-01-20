@@ -80,7 +80,7 @@
   when: ansible_os_family == 'RedHat'
   tags: [prerequisites]
 
-- name: "Make sure {{ itop_webroot }} exists"
+- name: "Make sure webroot exists"
   ansible.builtin.file:
     dest: "{{ itop_webroot }}"
     owner: "{{ itop_owner }}"
