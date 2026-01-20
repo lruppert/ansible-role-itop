@@ -8,7 +8,7 @@
   when: ansible_os_family == 'Debian'
 
 - name: Make sure MariaDB is installed (Red Hat)
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ itop_mysql_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
