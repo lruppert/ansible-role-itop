@@ -2,11 +2,10 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
+  name: podman
 platforms:
-  - name: debian-buster
-    # image: docker.io/debian:buster
-    image: docker.io/alehaa/debian-systemd:buster
+  - name: debian-13
+    image: docker.io/geerlingguy/docker-debian13-ansible
     pre_build_image: true
     privileged: true
     volumes:
@@ -18,8 +17,8 @@ platforms:
       - 80/tcp
     published_ports:
       - 0.0.0.0:8888:80/tcp
-  - name: ubuntu-20
-    image: docker.io/geerlingguy/docker-ubuntu2004-ansible
+  - name: ubuntu-24
+    image: docker.io/geerlingguy/docker-ubuntu2404-ansible
     pre_build_image: true
     privileged: true
     volumes:
@@ -31,8 +30,8 @@ platforms:
       - 80/tcp
     published_ports:
       - 0.0.0.0:8889:80/tcp
-  - name: centos-8
-    image: docker.io/centos:8
+  - name: rocky-8
+    image: docker.io/rockylinux:8
     pre_build_image: true
     privileged: true
     volumes:
