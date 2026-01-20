@@ -6,7 +6,7 @@
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
 
-- include: mysql.yml
+- include_tasks: mysql.yml
   when: itop_setup_mysql
   tags: [mysql]
 
@@ -19,7 +19,7 @@
   tags: [prerequisites]
 
 - name: Make sure PHP-FPM is installed (Red Hat)
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ itop_phpfpm_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
@@ -57,7 +57,7 @@
   tags: [prerequisites]
 
 - name: Make sure PHP modules are installed (Red Hat)
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ itop_php_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
@@ -73,7 +73,7 @@
   tags: [prerequisites]
 
 - name: Make sure Red Hat-specific prerequisites are installed (Red Hat)
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ itop_extra_yum_packages }}"
     state: present
   when: ansible_os_family == 'RedHat'
@@ -124,6 +124,7 @@
     mode: '0644'
   tags: [never, nginx]
 
-- include: preseed.yml
+- name: Include preseed
+  include_tasks: preseed.yml
   when: itop_preseed
   tags: [preseed]
