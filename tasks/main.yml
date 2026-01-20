@@ -1,12 +1,13 @@
 ---
-- name: gather os specific variables
+- name: Gather os specific variables
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
 
-- include_tasks: mysql.yml
+- name: Set up MySQL
+  ansible.builtin.include_tasks: mysql.yml
   when: itop_setup_mysql
   tags: [mysql]
 
@@ -125,6 +126,6 @@
   tags: [never, nginx]
 
 - name: Include preseed
-  include_tasks: preseed.yml
+  ansible.builtin.include_tasks: preseed.yml
   when: itop_preseed
   tags: [preseed]
